@@ -105,23 +105,35 @@ This section tracks decisions and learnings that evolve over time. Copilot reads
 
 
 def find_workspace_root(start_path: Path) -> Path:
-    """Find workspace root by looking for .git or .vscode folder."""
+    """Find workspace root. Prefers current directory if it looks like a repo."""
     current = start_path.resolve()
     
-    while current != current.parent:
-        if (current / ".git").exists() or (current / ".vscode").exists():
-            return current
-        current = current.parent
+    # If current directory has .git or .vscode, it's the workspace root
+    if (current / ".git").exists() or (current / ".vscode").exists():
+        return current
     
+    # Check if we're at the filesystem root
+    if current == current.parent:
+        return start_path.resolve()
+    
+    # Search upward only as fallback
+    parent = current.parent
+    while parent != parent.parent:
+        if (parent / ".git").exists() or (parent / ".vscode").exists():
+            return parent
+        parent = parent.parent
+    
+    # If nothing found, use the starting path (user's explicit choice)
     return start_path.resolve()
 
 
 def setup_copilot_instructions(workspace: Path, force: bool = False) -> bool:
     """Create or update copilot-instructions.md."""
-    print("📝 Setting up copilot-instructions.md...")
+    instructions_file = workspace / ".github" / "copilot-instructions.md"
+    print(f"📝 Setting up copilot-instructions.md...")
+    print(f"   📁 Target: {instructions_file}")
     
     github_dir = workspace / ".github"
-    instructions_file = github_dir / "copilot-instructions.md"
     
     # Ensure .github directory exists
     github_dir.mkdir(exist_ok=True)
@@ -135,14 +147,15 @@ def setup_copilot_instructions(workspace: Path, force: bool = False) -> bool:
     # File exists - be careful with user's content
     content = instructions_file.read_text(encoding="utf-8")
     
-    if "Memory Persistence Protocol" in content:
-        print("   ⏭️  Memory Protocol already exists")
-        return True
-    
     if force:
         # User explicitly wants to overwrite
         print("   🔄 Overwriting with template (--force)...")
         instructions_file.write_text(get_template(), encoding="utf-8")
+        return True
+    
+    # Check if Memory Protocol already exists
+    if "Memory Persistence Protocol" in content:
+        print("   ⏭️  Memory Protocol already exists")
         return True
     
     # Preserve user's content - just append what's needed

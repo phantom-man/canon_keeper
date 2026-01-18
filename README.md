@@ -8,20 +8,17 @@ Copilot memory persistence - teach Copilot to remember learnings across sessions
 
 ```bash
 pip install canon-keeper
-python -m canon_keeper install
 ```
 
-Or with pipx (no venv needed):
-```bash
-pipx run canon-keeper
-```
+That's it! The installer runs automatically during setup and creates `.github/copilot-instructions.md`.
 
 That's it! The installer creates `.github/copilot-instructions.md` with:
+
 - Memory Persistence Protocol (`@History` directive)
 - Best practices template
 - Session Learnings Log table
 
-## Usage
+In any Copilot chat, say:
 
 In any Copilot chat, say:
 
@@ -33,6 +30,7 @@ add to memory
 ```
 
 Copilot will:
+
 1. Extract learnings from the conversation
 2. Check for duplicates in the Session Learnings Log
 3. Append new learnings to `copilot-instructions.md`
@@ -43,6 +41,7 @@ Copilot will:
 No MCP server. No API keys. No runtime dependencies.
 
 The installer just creates a `copilot-instructions.md` file with a directive that tells Copilot:
+
 1. When you see `@History`, extract learnings from the conversation
 2. Read the existing Session Learnings Log
 3. Skip duplicates
