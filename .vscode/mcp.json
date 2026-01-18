@@ -1,0 +1,23 @@
+{
+  "servers": {
+    "canon-keeper": {
+      "type": "stdio",
+      "command": "C:/Users/User/source/repos/canon_keeper_mcp/.venv/Scripts/python.exe",
+      "args": [
+        "-m",
+        "canon_keeper_mcp"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "mcpServers": {
+    "canon-keeper": {
+      "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "args": [
+        "-m",
+        "canon_keeper_mcp"
+      ],
+      "cwd": "${workspaceFolder}"
+    }
+  }
+}

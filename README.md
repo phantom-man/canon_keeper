@@ -63,13 +63,25 @@ Add to `.vscode/mcp.json`:
 
 ```json
 {
-  "mcpServers": {
+  "servers": {
     "canon-keeper": {
-      "command": "python",
-      "args": ["-m", "canon_keeper_mcp"],
-      "cwd": "${workspaceFolder}"
+      "type": "stdio",
+      "command": "/path/to/your/python",
+      "args": ["-m", "canon_keeper_mcp"]
     }
   }
+}
+```
+
+> **Note:** Replace `/path/to/your/python` with the absolute path to your Python executable (e.g., `C:/Users/You/project/.venv/Scripts/python.exe` on Windows or `/home/you/project/.venv/bin/python` on Linux/Mac).
+
+### 3. Enable MCP in VS Code
+
+Add to `.vscode/settings.json`:
+
+```json
+{
+  "github.copilot.chat.modelContextProtocol.enabled": true
 }
 ```
 

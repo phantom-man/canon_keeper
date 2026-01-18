@@ -1,0 +1,29 @@
+{
+  "name": "canon-keeper-mcp-helper",
+  "displayName": "Canon Keeper MCP Helper",
+  "description": "Auto-register the Canon Keeper MCP server in the current workspace and prompt to reload.",
+  "version": "0.0.1",
+  "publisher": "phantom-man",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phantom-man/canon_keeper_mcp"
+  },
+  "contributes": {},
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.4",
+    "@types/vscode": "^1.96.0",
+    "typescript": "^5.6.3"
+  }
+}

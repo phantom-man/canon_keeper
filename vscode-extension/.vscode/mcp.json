@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "mcpServers": {
+    "canon-keeper": {
+      "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "args": [
+        "-m",
+        "canon_keeper_mcp"
+      ],
+      "cwd": "${workspaceFolder}"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 [project]
 name = "canon-keeper-mcp"
-version = "0.1.2"
+version = "0.1.5"
 description = "MCP server for extracting and persisting learnings from Copilot conversations"
 readme = "README.md"
 requires-python = ">=3.10"
