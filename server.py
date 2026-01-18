@@ -18,13 +18,23 @@ from mcp.server.stdio import stdio_server
 from mcp.types import Tool, TextContent
 
 # Try to import Google GenAI, fallback to OpenAI
+GENAI_CLIENT: Any | None = None
+GENAI_TYPES: Any | None = None
+OPENAI_CLIENT: Any | None = None
+LLM_PROVIDER: str | None = None
+
 try:
-    from google import genai
-    from google.genai import types
+    from google import genai as _genai_module
+    from google.genai import types as _genai_types
+
+    GENAI_CLIENT = _genai_module
+    GENAI_TYPES = _genai_types
     LLM_PROVIDER = "google"
 except ImportError:
     try:
-        import openai
+        import openai as _openai_module
+
+        OPENAI_CLIENT = _openai_module
         LLM_PROVIDER = "openai"
     except ImportError:
         LLM_PROVIDER = None
@@ -103,25 +113,40 @@ Respond in JSON:
 def call_llm(prompt: str) -> str:
     """Call the configured LLM provider."""
     if LLM_PROVIDER == "google":
-        client = genai.Client()
+        if GENAI_CLIENT is None or GENAI_TYPES is None:
+            raise RuntimeError("Google GenAI client not available. Install google-genai.")
+
+        client = GENAI_CLIENT.Client()
         response = client.models.generate_content(
             model="gemini-2.0-flash-001",
             contents=prompt,
-            config=types.GenerateContentConfig(
+            config=GENAI_TYPES.GenerateContentConfig(
                 temperature=0.1,
                 response_mime_type="application/json"
             )
         )
+        if response.text is None:
+            raise RuntimeError("LLM response missing text content.")
         return response.text
     elif LLM_PROVIDER == "openai":
-        client = openai.OpenAI()
+        if OPENAI_CLIENT is None:
+            raise RuntimeError("OpenAI client not available. Install openai.")
+
+        client = OPENAI_CLIENT.OpenAI()
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.1,
             response_format={"type": "json_object"}
         )
-        return response.choices[0].message.content
+        if not response.choices:
+            raise RuntimeError("OpenAI response missing choices.")
+
+        message = response.choices[0].message
+        if message.content is None:
+            raise RuntimeError("OpenAI response missing message content.")
+
+        return message.content
     else:
         raise RuntimeError("No LLM provider available. Install google-genai or openai.")
 
